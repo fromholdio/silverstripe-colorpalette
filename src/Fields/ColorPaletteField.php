@@ -1,6 +1,6 @@
 <?php
 
-namespace Heyday\ColorPalette\Fieldss;
+namespace Heyday\ColorPalette\Fields;
 
 
 use SilverStripe\Forms\OptionsetField;

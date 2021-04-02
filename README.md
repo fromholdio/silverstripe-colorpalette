@@ -17,7 +17,7 @@ Provides a color picker field in SilverStripe allowing a user to select from def
 ```php
 $fields->addFieldToTab(
 	'Root.Main',
-	Heyday\ColorPalette\Fieldss\ColorPaletteField::create(
+	Heyday\ColorPalette\Fields\ColorPaletteField::create(
 		'BackgroundColor',
 		'Background Color',
 		array(
@@ -33,7 +33,7 @@ $fields->addFieldToTab(
 ```php
 $fields->addFieldToTab(
 	'Root.Main',
-	Heyday\ColorPalette\Fieldss\GroupedColorPaletteField::create(
+	Heyday\ColorPalette\Fields\GroupedColorPaletteField::create(
 		'BackgroundColor',
 		'Background Color',
 		array(
