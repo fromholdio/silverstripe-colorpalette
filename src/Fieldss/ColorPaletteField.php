@@ -1,6 +1,6 @@
 <?php
 
-namespace Heyday\ColorPalette\Fields;
+namespace Heyday\ColorPalette\Fieldss;
 
 
 use SilverStripe\Forms\OptionsetField;
@@ -37,4 +37,3 @@ class ColorPaletteField extends OptionsetField
         return $field;
     }
 }
-

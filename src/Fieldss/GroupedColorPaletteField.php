@@ -1,6 +1,6 @@
 <?php
 
-namespace Heyday\ColorPalette\Fields;
+namespace Heyday\ColorPalette\Fieldss;
 
 
 use InvalidArgumentException;
