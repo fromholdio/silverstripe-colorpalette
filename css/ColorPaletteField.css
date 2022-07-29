@@ -18,7 +18,7 @@
     height: 50px;
     display: block;
     margin: 5px 15px 5px 5px;
-    outline: 1px solid #fff;
+    outline: 1px solid #dbe0e9;
     border: 1px solid #999;
 }
 
@@ -27,7 +27,7 @@
 }
 
 .colorpalette li input:checked + label {
-    outline: 5px solid #ddd;
+    outline: 5px solid #dbe0e9;
     position: relative;
 }
 .colorpalette li input:checked + label:after {
