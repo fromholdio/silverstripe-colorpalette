@@ -2,38 +2,147 @@
 
 namespace Fromholdio\ColorPalette\Fields;
 
-
 use SilverStripe\Forms\OptionsetField;
+use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
 
-
 /**
- * Class ColorPaletteField
+ * $source = [
+ *      'black' => '#000',
+ *      'white' => [
+ *          'label' => 'White',
+ *          'background_css' => '#000',
+ *          'color_css' => '#FFF', // optional
+ *          'sample_text' => 'Aa' // optional
+ *      ]
+ * ];
  */
 class ColorPaletteField extends OptionsetField
 {
-    /**
-     * @param array $properties
-     * @return HTMLText
-     */
+    private static $sample_text_string = 'Aa';
+
+    protected array $optionsData = [];
+    protected ?string $sampleText = null;
+
+    public function __construct(
+        $name,
+        $title = null,
+        $source = [],
+        $value = null,
+        ?string $sampleText = null
+    ) {
+        parent::__construct($name, $title, $source, $value);
+        $this->setSampleText($sampleText);
+    }
+
+    public function setSource($source): self
+    {
+        $newSource = [];
+        $optionsData = [];
+        foreach ($source as $optionValue => $optionData)
+        {
+            if (is_array($optionData)) {
+                $label = $optionData['label'] ?? null;
+                $backgroundCSS = $optionData['background_css'] ?? null;
+                if (!empty($backgroundCSS)) {
+                    $title = empty($label) ? $backgroundCSS : $label;
+                    $optionsData[$optionValue] = $optionData;
+                    $newSource[$optionValue] = $title;
+                }
+            }
+            elseif (!empty($optionData)) {
+                $optionsData[$optionValue] = ['background_css' => $optionData];
+                $newSource[$optionValue] = $optionData;
+            }
+        }
+        $this->source = $newSource;
+        $this->optionsData = $optionsData;
+        return $this;
+    }
+
     public function Field($properties = [])
     {
         Requirements::css('fromholdio/silverstripe-colorpalette:css/ColorPaletteField.css');
-
         return parent::Field($properties);
     }
 
-    /**
-     * Gets a readonly version of the field
-     * @return ColorPaletteField_Readonly
-     */
-    public function performReadonlyTransformation()
+    protected function getFieldOption($value, $title, $odd): ArrayData
     {
-        // Source and values are DataObject sets.
+        $option = parent::getFieldOption($value, $title, $odd);
+        $option->setField('BackgroundCSS', $this->getOptionBackgroundCSS($value));
+        $option->setField('ColorCSS', $this->getOptionColorCSS($value));
+        $option->setField('SampleText', $this->getOptionSampleText($value));
+        $option->setField('Label', $this->getOptionLabel($value));
+        return $option;
+    }
+
+    protected function getOptionDataValue($value, $key): ?string
+    {
+        $data = $this->optionsData;
+        return $data[$key][$value] ?? null;
+    }
+
+    protected function getOptionBackgroundCSS($value): ?string
+    {
+        return $this->getOptionDataValue($value,'background_css');
+    }
+
+    protected function getOptionColorCSS($value): ?string
+    {
+        return $this->getOptionDataValue($value,'color_css');
+    }
+
+    protected function getOptionSampleText($value): ?string
+    {
+        $text = $this->getOptionDataValue($value, 'sample_text');
+        if ($text === false) {
+            $text = null;
+        }
+        elseif (empty($text)) {
+            $text = $this->getSampleText();
+        }
+        return $text;
+    }
+
+    protected function getOptionLabel($value): ?string
+    {
+        return $this->getOptionDataValue($value,'label');
+    }
+
+    protected function getOptionTitle($value): ?string
+    {
+        $label = $this->getOptionLabel($value);
+        if (empty($label)) {
+            $label = $this->getOptionBackgroundCSS($value);
+        }
+        return $label;
+    }
+
+    public function setSampleText(?string $text = null): self
+    {
+        if (is_null($text)) {
+            $text = static::config()->get('sample_text_string');
+        }
+        $this->extend('updateSampleText', $text);
+        $this->sampleText = $text;
+        return $this;
+    }
+
+    public function getSampleText(): ?string
+    {
+        return $this->sampleText;
+    }
+
+    public function Type(): string
+    {
+        return 'colorpalette';
+    }
+
+    public function performReadonlyTransformation(): ColorPaletteField_Readonly
+    {
         $field = $this->castedCopy(ColorPaletteField_Readonly::class);
         $field->setSource($this->getSource());
         $field->setReadonly(true);
-
         return $field;
     }
 }

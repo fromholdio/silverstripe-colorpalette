@@ -2,102 +2,126 @@
 
 namespace Fromholdio\ColorPalette\Fields;
 
-
-use InvalidArgumentException;
-use SilverStripe\Forms\GroupedDropdownField;
+use SilverStripe\Core\Convert;
+use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
 
-
 /**
- * Class GroupedColorPaletteField
+ * $source = [
+ *      'group name' => [
+ *          'black' => '#000',
+ *          'white' => [
+ *              'label' => 'White',
+ *              'background_css' => '#000',
+ *              'color_css' => '#FFF', // optional
+ *              'sample_text' => 'Aa' // optional
+ *          ]
+ *      ],
+ *      'Another group' => [
+ *          'red' => '#ff0',
+ *          'blue' => 'blue'
+ *      ]
+ * ];
  */
-class GroupedColorPaletteField extends GroupedDropdownField
+class GroupedColorPaletteField extends ColorPaletteField
 {
-    /**
-     * @param array $properties
-     * @throws InvalidArgumentException
-     * @return HTMLText
-     */
-    public function Field($properties = [])
+    protected array $groupsData = [];
+
+    public function setSource($source): self
     {
-        Requirements::css('fromholdio/silverstripe-colorpalette:css/ColorPaletteField.css');
-
-        $source = $this->getSource();
-
-        $odd = 0;
-        $fieldExtraClass = $this->extraClass();
-        $groups = [];
-
-        if ($source) {
-            foreach ($source as $name => $values) {
-                if (is_array($values)) {
-                    $options = [];
-
-                    foreach ($values as $value => $color) {
-                        $itemID = $this->ID() . '_' . preg_replace('/[^a-zA-Z0-9]/', '', $value);
-                        $odd = ($odd + 1) % 2;
-                        $extraClass = $odd ? 'odd' : 'even';
-                        $extraClass .= ' val' . preg_replace('/[^a-zA-Z0-9\-\_]/', '_', $value);
-
-                        $options[] = new ArrayData([
-                            'ID' => $itemID,
-                            'Class' => $extraClass,
-                            'Name' => $this->name,
-                            'Value' => $value,
-                            'Title' => $color,
-                            'isChecked' => $value == $this->value,
-                            'isDisabled' => $this->disabled || in_array($value, $this->disabledItems),
-                        ]);
+        $flatSource = [];
+        $groupsData = [];
+        foreach ($source as $groupTitle => $groupData)
+        {
+            if (!empty($groupTitle) && !empty($groupData))
+            {
+                $groupName = Convert::raw2htmlid($groupTitle);
+                $groupsData[$groupName] = [
+                    'title' => $groupTitle,
+                    'options' => []
+                ];
+                foreach ($groupData as $optionValue => $optionData)
+                {
+                    if (is_array($optionData)) {
+                        if (!empty($optionData['background_css'])) {
+                            $groupsData[$groupName]['options'][] = $optionValue;
+                            $flatSource[$optionValue] = $optionData;
+                        }
                     }
-
-                    $groups[] = new ArrayData(
-                        [
-                            'ID' => $this->ID() . '_' . preg_replace('/[^a-zA-Z0-9]/', '', $name),
-                            'extraClass' => $fieldExtraClass,
-                            'Name' => $name,
-                            'Options' => new ArrayList($options)
-                        ]
-                    );
-
-                } else {
-                    throw new InvalidArgumentException('To use GroupedColorPaletteField you need to pass in an array of array\'s');
+                    elseif (!empty($optionData)) {
+                        $groupsData[$groupName]['options'][] = $optionValue;
+                        $flatSource[$optionValue] = $optionData;
+                    }
+                }
+                $groupOptions = $groupsData[$groupName]['options'];
+                if (empty($groupOptions)) {
+                    unset($groupsData[$groupName]);
                 }
             }
         }
-
-        $properties = array_merge(
-            $properties,
-            [
-                'Groups' => new ArrayList($groups)
-            ]
-        );
-
-        return $this->customise($properties)->renderWith(
-            $this->getTemplates()
-        );
+        $this->groupsData = $groupsData;
+        return parent::setSource($flatSource);
     }
 
-    /**
-     * @return string
-     */
-    public function Type()
+    public function Field($properties = [])
     {
-        return 'groupedcolorpalette colorpalette';
+        $groups = ArrayList::create();
+        $groupsData = $this->groupsData;
+        foreach ($groupsData as $groupName => $groupData)
+        {
+            $group = ArrayData::create();
+            $group->setField('Title', $groupData['title']);
+            $group->setField('Name', $groupName);
+
+            $options = ArrayList::create();
+            $optionValues = $groupData['options'];
+            $odd = false;
+            foreach ($optionValues as $optionValue)
+            {
+                $odd = !$odd;
+                $title = $this->getOptionTitle($optionValue);
+                $options->push(
+                    $this->getFieldOption($optionValue, $title, $odd)
+                );
+            }
+            $group->setField('Options', $options);
+            $groups->push($group);
+        }
+
+        $properties = array_merge($properties, [
+            'Groups' => $groups
+        ]);
+
+        Requirements::css('fromholdio/silverstripe-colorpalette:css/ColorPaletteField.css');
+        return FormField::Field($properties);
     }
 
-    /**
-     * Gets a readonly version of the field
-     * @return GroupedColorPaletteField_Readonly
-     */
-    public function performReadonlyTransformation()
+    public function Type(): string
     {
-        // Source and values are DataObject sets.
-        $field = $this->castedCopy(GroupedColorPaletteField_Readonly::class);
-        $field->setSource($this->getSource());
-        $field->setReadonly(true);
+        return 'groupedcolorpalette ' . parent::Type();
+    }
 
+    protected function getOptionGroupTitle($value): ?string
+    {
+        $title = null;
+        $groupsData = $this->groupsData;
+        foreach ($groupsData as $groupName => $groupData) {
+            if (in_array($value, $groupData['options'])) {
+                $title = $groupData['title'];
+                break;
+            }
+        }
+        return $title;
+    }
+
+    public function performReadonlyTransformation(): ColorPaletteField_Readonly
+    {
+        $field = parent::performReadonlyTransformation();
+        $field->setGroupTitle(
+            $this->getOptionGroupTitle($this->Value())
+        );
         return $field;
     }
 }
