@@ -1,5 +1,5 @@
 mappings:
-  ColorPaletteField: Heyday\ColorPalette\Fields\ColorPaletteField
-  ColorPaletteField_Readonly: Heyday\ColorPalette\Fields\ColorPaletteField_Readonly
-  GroupedColorPaletteField: Heyday\ColorPalette\Fields\GroupedColorPaletteField
-  GroupedColorPaletteField_Readonly: Heyday\ColorPalette\Fields\GroupedColorPaletteField_Readonly
+  ColorPaletteField: Fromholdio\ColorPalette\Fields\ColorPaletteField
+  ColorPaletteField_Readonly: Fromholdio\ColorPalette\Fields\ColorPaletteField_Readonly
+  GroupedColorPaletteField: Fromholdio\ColorPalette\Fields\GroupedColorPaletteField
+  GroupedColorPaletteField_Readonly: Fromholdio\ColorPalette\Fields\GroupedColorPaletteField_Readonly

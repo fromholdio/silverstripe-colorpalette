@@ -2,9 +2,13 @@
 
 Provides a color picker field in SilverStripe allowing a user to select from defined selection of colors (palette)
 
+Forked from heyday/silverstripe-colorpalette, applying PRs and fresh styling. 2.x branch is compatible as a direct replacement of the original repo's 2.x branch.
+
+The active 3.x branch diverges from the original with additional features and breaking changes.
+
 ## Installation (with composer)
 
-	$ composer require heyday/silverstripe-colorpalette
+	$ composer require fromholdio/silverstripe-colorpalette
 
 ## Example
 
@@ -17,7 +21,7 @@ Provides a color picker field in SilverStripe allowing a user to select from def
 ```php
 $fields->addFieldToTab(
 	'Root.Main',
-	Heyday\ColorPalette\Fields\ColorPaletteField::create(
+	Fromholdio\ColorPalette\Fields\ColorPaletteField::create(
 		'BackgroundColor',
 		'Background Color',
 		array(
@@ -33,7 +37,7 @@ $fields->addFieldToTab(
 ```php
 $fields->addFieldToTab(
 	'Root.Main',
-	Heyday\ColorPalette\Fields\GroupedColorPaletteField::create(
+	Fromholdio\ColorPalette\Fields\GroupedColorPaletteField::create(
 		'BackgroundColor',
 		'Background Color',
 		array(

@@ -1,6 +1,6 @@
 <?php
 
-namespace Heyday\ColorPalette\Fields;
+namespace Fromholdio\ColorPalette\Fields;
 
 
 use InvalidArgumentException;
@@ -22,7 +22,7 @@ class GroupedColorPaletteField extends GroupedDropdownField
      */
     public function Field($properties = [])
     {
-        Requirements::css('heyday/silverstripe-colorpalette:css/ColorPaletteField.css');
+        Requirements::css('fromholdio/silverstripe-colorpalette:css/ColorPaletteField.css');
 
         $source = $this->getSource();
 

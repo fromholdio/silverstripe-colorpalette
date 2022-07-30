@@ -1,6 +1,6 @@
 <?php
 
-namespace Heyday\ColorPalette\Fields;
+namespace Fromholdio\ColorPalette\Fields;
 
 
 use SilverStripe\Forms\LookupField;
@@ -15,7 +15,7 @@ class ColorPaletteField_Readonly extends LookupField
      */
     public function Field($properties = [])
     {
-        Requirements::css('heyday/silverstripe-colorpalette:css/ColorPaletteField.css');
+        Requirements::css('fromholdio/silverstripe-colorpalette:css/ColorPaletteField.css');
 
         return parent::Field($properties);
     }
