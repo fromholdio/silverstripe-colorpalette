@@ -12,7 +12,7 @@ The active 3.x branch diverges from the original with additional features and br
 
 ## Example
 
-![Color Palette Example](resources/example.png?raw=true)
+![Color Palette Example](resources/example_v3.png?raw=true)
 
 ## Usage
 
