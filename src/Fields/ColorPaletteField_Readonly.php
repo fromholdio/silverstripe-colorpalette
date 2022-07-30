@@ -12,7 +12,7 @@ class ColorPaletteField_Readonly extends SingleLookupField
 
     public function Field($properties = [])
     {
-        Requirements::css('fromholdio/silverstripe-colorpalette:css/ColorPaletteField.css');
+        Requirements::css('fromholdio/silverstripe-colorpalette:css/styles.css');
         $this->setTemplate(static::class);
         return parent::Field($properties);
     }

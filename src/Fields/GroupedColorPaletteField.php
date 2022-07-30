@@ -95,7 +95,7 @@ class GroupedColorPaletteField extends ColorPaletteField
             'Groups' => $groups
         ]);
 
-        Requirements::css('fromholdio/silverstripe-colorpalette:css/ColorPaletteField.css');
+        Requirements::css('fromholdio/silverstripe-colorpalette:css/styles.css');
         return FormField::Field($properties);
     }
 

@@ -63,7 +63,7 @@ class ColorPaletteField extends OptionsetField
 
     public function Field($properties = [])
     {
-        Requirements::css('fromholdio/silverstripe-colorpalette:css/ColorPaletteField.css');
+        Requirements::css('fromholdio/silverstripe-colorpalette:css/styles.css');
         return parent::Field($properties);
     }
 
