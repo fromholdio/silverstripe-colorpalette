@@ -3,6 +3,7 @@
 namespace Fromholdio\ColorPalette\Fields;
 
 use SilverStripe\Forms\OptionsetField;
+use SilverStripe\Forms\SingleLookupField;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
 
@@ -79,7 +80,7 @@ class ColorPaletteField extends OptionsetField
     protected function getOptionDataValue($value, $key): ?string
     {
         $data = $this->optionsData;
-        return $data[$key][$value] ?? null;
+        return $data[$value][$key] ?? null;
     }
 
     protected function getOptionBackgroundCSS($value): ?string
@@ -135,14 +136,27 @@ class ColorPaletteField extends OptionsetField
 
     public function Type(): string
     {
-        return 'colorpalette';
+        return 'colorpalettefield';
     }
 
-    public function performReadonlyTransformation(): ColorPaletteField_Readonly
+    public function performReadonlyTransformation(): SingleLookupField
     {
-        $field = $this->castedCopy(ColorPaletteField_Readonly::class);
-        $field->setSource($this->getSource());
-        $field->setReadonly(true);
+        $value = $this->Value();
+        if (!empty($value))
+        {
+            /** @var ColorPaletteField_Readonly $field */
+            $field = $this->castedCopy(ColorPaletteField_Readonly::class);
+            $field->setSource($this->getSource());
+            $field->setReadonly(true);
+            $field->addOptionData('BackgroundCSS', $this->getOptionBackgroundCSS($value));
+            $field->addOptionData('ColorCSS', $this->getOptionColorCSS($value));
+            $field->addOptionData('SampleText', $this->getOptionSampleText($value));
+            $field->addOptionData('Label', $this->getOptionLabel($value));
+            $field->addOptionData('Title', $this->getOptionTitle($value));
+        }
+        else {
+            $field = parent::performReadonlyTransformation();
+        }
         return $field;
     }
 }

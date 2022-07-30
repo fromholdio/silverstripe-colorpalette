@@ -2,27 +2,34 @@
 
 namespace Fromholdio\ColorPalette\Fields;
 
-use SilverStripe\Forms\LookupField;
+use SilverStripe\Forms\SingleLookupField;
+use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
 
-class ColorPaletteField_Readonly extends LookupField
+class ColorPaletteField_Readonly extends SingleLookupField
 {
-    protected ?string $groupTitle = null;
+    protected array $optionData = [];
 
     public function Field($properties = [])
     {
         Requirements::css('fromholdio/silverstripe-colorpalette:css/ColorPaletteField.css');
+        $this->setTemplate(static::class);
         return parent::Field($properties);
     }
 
-    public function setGroupTitle(?string $title): self
+    public function addOptionData($key, $value): self
     {
-        $this->groupTitle = $title;
+        $this->optionData[$key] = $value;
         return $this;
     }
 
-    public function getGroupTitle(): ?string
+    public function getOptionData(): ArrayData
     {
-        return $this->groupTitle;
+        return ArrayData::create($this->optionData);
+    }
+
+    public function Type(): string
+    {
+        return 'colorpalettefield-readonly colorpalettefield';
     }
 }

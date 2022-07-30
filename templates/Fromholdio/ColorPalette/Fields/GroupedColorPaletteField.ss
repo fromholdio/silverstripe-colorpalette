@@ -4,7 +4,7 @@
             <h4 class="ColorPaletteField__title">$Title</h4>
             <ul class="ColorPaletteField__colors">
                 <% loop $Options %>
-                    <% include Fromholdio\ColorPaletteField\Fields\ColorPaletteFieldOption %>
+                    <% include PPIU\Web\Palette\ColorPaletteFieldOption %>
                 <% end_loop %>
             </ul>
         </div>

@@ -4,6 +4,7 @@ namespace Fromholdio\ColorPalette\Fields;
 
 use SilverStripe\Core\Convert;
 use SilverStripe\Forms\FormField;
+use SilverStripe\Forms\SingleLookupField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\Requirements;
@@ -100,7 +101,7 @@ class GroupedColorPaletteField extends ColorPaletteField
 
     public function Type(): string
     {
-        return 'groupedcolorpalette ' . parent::Type();
+        return 'groupedcolorpalettefield ' . parent::Type();
     }
 
     protected function getOptionGroupTitle($value): ?string
@@ -116,12 +117,12 @@ class GroupedColorPaletteField extends ColorPaletteField
         return $title;
     }
 
-    public function performReadonlyTransformation(): ColorPaletteField_Readonly
+    public function performReadonlyTransformation(): SingleLookupField
     {
         $field = parent::performReadonlyTransformation();
-        $field->setGroupTitle(
-            $this->getOptionGroupTitle($this->Value())
-        );
+        if (is_a($field, ColorPaletteField_Readonly::class)) {
+            $field->addOptionData('GroupTitle', $this->getOptionGroupTitle($this->Value()));
+        }
         return $field;
     }
 }
