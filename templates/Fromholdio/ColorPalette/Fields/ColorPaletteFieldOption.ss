@@ -9,6 +9,6 @@
     <label class="ColorPaletteField__label"
            for="$ID"
            style="<% if $BackgroundCSS %>background: {$BackgroundCSS};<% end_if %> <% if $ColorCSS %>color: {$ColorCSS};<% end_if %>"
-        <% if $SampleText %>data-colorpalette-sample-text="$SampleText" <% end_if %>
+        <% if $SampleText && $ColorCSS %>data-colorpalette-sample-text="$SampleText" <% end_if %>
     ></label>
 </li>

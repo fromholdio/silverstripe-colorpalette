@@ -14,7 +14,7 @@
                    for="$ID"
                    style="<% if $OptionData.BackgroundCSS %>background: {$OptionData.BackgroundCSS};<% end_if %> <% if $OptionData.ColorCSS %>color: {$OptionData.ColorCSS};<% end_if %>"
                 <% if $OptionData.Label %>data-colorpalette-label="$OptionData.Label" <% end_if %>
-                <% if $OptionData.SampleText %>data-colorpalette-sample-text="$OptionData.SampleText" <% end_if %>
+                <% if $OptionData.SampleText && $OptionData.ColorCSS %>data-colorpalette-sample-text="$OptionData.SampleText" <% end_if %>
             ></label>
         </li>
     </ul>
