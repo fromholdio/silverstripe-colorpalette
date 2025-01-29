@@ -30,6 +30,31 @@ class GroupedColorPaletteField extends ColorPaletteField
 {
     protected array $groupsData = [];
 
+    public function getSchemaStateDefaults()
+    {
+        $data = parent::getSchemaStateDefaults();
+
+        $disabled = $this->getDisabledItems();
+
+        $groupsData = $this->groupsData;
+        foreach ($groupsData as $groupName => $groupData) {
+            $data['groups'][] = [
+                'title' => $groupData['title'],
+                'source' => array_map(function (string|int $value) use ($disabled) {
+                    return [
+                        'value' => $value,
+                        'title' => $this->getOptionTitle($value),
+                        'disabled' => in_array($value, $disabled),
+                        'inlineStyle' => $this->getOptionInlineStyle($value) ?? '',
+                        'sampleText' => $this->getOptionSampleText($value) ?? '',
+                    ];
+                }, $groupData['options'])
+            ];
+        }
+
+        return $data;
+    }
+
     public function setSource($source): self
     {
         $flatSource = [];
@@ -95,7 +120,6 @@ class GroupedColorPaletteField extends ColorPaletteField
             'Groups' => $groups
         ]);
 
-        Requirements::css('fromholdio/silverstripe-colorpalette:css/styles.css');
         return FormField::Field($properties);
     }
 

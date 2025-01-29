@@ -2,6 +2,7 @@
 
 namespace Fromholdio\ColorPalette\Fields;
 
+use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\SingleLookupField;
 use SilverStripe\View\ArrayData;
@@ -22,6 +23,10 @@ class ColorPaletteField extends OptionsetField
 {
     private static $sample_text_string = 'Aa';
 
+    protected $schemaComponent = 'ColorPaletteField';
+
+    protected $schemaDataType = FormField::SCHEMA_DATA_TYPE_SINGLESELECT;
+
     protected array $optionsData = [];
     protected ?string $sampleText = null;
 
@@ -34,6 +39,40 @@ class ColorPaletteField extends OptionsetField
     ) {
         parent::__construct($name, $title, $source, $value);
         $this->setSampleText($sampleText);
+    }
+
+    public function getSchemaStateDefaults()
+    {
+        $data = parent::getSchemaStateDefaults();
+
+        $data['value'] = $this->getDefaultValue();
+        unset($data['source']);
+
+        $disabled = $this->getDisabledItems();
+
+        $source = $this->getSource();
+        $data['source'] = (is_array($source))
+            ? array_map(function ($value, $title) use ($disabled) {
+                $item = [
+                    'value' => $value,
+                    'title' => $title,
+                    'disabled' => in_array($value, $disabled),
+                    'inlineStyle' => '',
+                    'sampleText' => '',
+                ];
+                $sampleText = $this->getOptionSampleText($value);
+                if (!empty($sampleText)) {
+                    $item['sampleText'] = $sampleText;
+                }
+                $inlineStyle = $this->getOptionInlineStyle($value);
+                if (!empty($inlineStyle)) {
+                    $item['inlineStyle'] = $inlineStyle;
+                }
+                return $item;
+            }, array_keys($source), $source)
+            : [];
+
+        return $data;
     }
 
     public function setSource($source): self
@@ -61,12 +100,6 @@ class ColorPaletteField extends OptionsetField
         return $this;
     }
 
-    public function Field($properties = [])
-    {
-        Requirements::css('fromholdio/silverstripe-colorpalette:css/styles.css');
-        return parent::Field($properties);
-    }
-
     protected function getFieldOption($value, $title, $odd): ArrayData
     {
         $option = parent::getFieldOption($value, $title, $odd);
@@ -91,6 +124,20 @@ class ColorPaletteField extends OptionsetField
     protected function getOptionColorCSS($value): ?string
     {
         return $this->getOptionDataValue($value,'color_css');
+    }
+
+    protected function getOptionInlineStyle($value): ?string
+    {
+        $css = '';
+        $background = $this->getOptionBackgroundCSS($value);
+        if (!empty($background)) {
+            $css .= 'background:' . $background . ';';
+        }
+        $color = $this->getOptionColorCSS($value);
+        if (!empty($color)) {
+            $css .= 'color:' . $color . ';';
+        }
+        return empty($css) ? null : $css;
     }
 
     protected function getOptionSampleText($value): ?string

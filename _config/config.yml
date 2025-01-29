@@ -1,0 +1,8 @@
+---
+Name: fio-colorpalette
+---
+SilverStripe\Admin\LeftAndMain:
+  extra_requirements_javascript:
+    - 'fromholdio/silverstripe-colorpalette: client/dist/js/bundle.js'
+  extra_requirements_css:
+    - 'fromholdio/silverstripe-colorpalette: client/dist/styles/bundle.css'
