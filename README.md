@@ -4,6 +4,8 @@ Provides a color picker field in SilverStripe allowing a user to select from def
 
 Forked from heyday/silverstripe-colorpalette, applying PRs and fresh styling. 2.x branch is compatible as a direct replacement of the original repo's 2.x branch.
 
+**As of 3.2.0, this module now contains a React component, enabling compatibility for the field with Elemental inline forms.**
+
 The active 3.x branch diverges from the original with additional features and breaking changes:
 - Provide text labels per color and have them displayed to users
 - Set a full CSS background declaration per color rather than just a hex value (allowing for gradients/images/etc)
