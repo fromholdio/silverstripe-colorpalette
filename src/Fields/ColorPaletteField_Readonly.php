@@ -3,8 +3,7 @@
 namespace Fromholdio\ColorPalette\Fields;
 
 use SilverStripe\Forms\SingleLookupField;
-use SilverStripe\View\ArrayData;
-use SilverStripe\View\Requirements;
+use SilverStripe\Model\ArrayData;
 
 class ColorPaletteField_Readonly extends SingleLookupField
 {

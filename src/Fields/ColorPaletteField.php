@@ -5,8 +5,7 @@ namespace Fromholdio\ColorPalette\Fields;
 use SilverStripe\Forms\FormField;
 use SilverStripe\Forms\OptionsetField;
 use SilverStripe\Forms\SingleLookupField;
-use SilverStripe\View\ArrayData;
-use SilverStripe\View\Requirements;
+use SilverStripe\Model\ArrayData;
 
 /**
  * $source = [
@@ -188,7 +187,7 @@ class ColorPaletteField extends OptionsetField
 
     public function performReadonlyTransformation(): SingleLookupField
     {
-        $value = $this->Value();
+        $value = $this->getValue();
         if (!empty($value))
         {
             /** @var ColorPaletteField_Readonly $field */
