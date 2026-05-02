@@ -36,9 +36,6 @@
     "extra": {
         "expose": [
             "client/dist"
-        ],
-        "branch-alias": {
-            "dev-4.x": "4.0.x-dev"
-        }
+        ]
     }
 }
